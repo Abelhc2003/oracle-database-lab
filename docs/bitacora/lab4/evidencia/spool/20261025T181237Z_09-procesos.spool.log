@@ -1,0 +1,53 @@
+
+== 1. Cuántos procesos tiene la instancia y de qué tipo ==
+
+TIPO        PROCESOS_ORACLE PROCESOS_LINUX
+----------- --------------- --------------
+background               88             55
+servidor                  4              4
+(si procesos_oracle > procesos_linux: algunos procesos Oracle son HILOS dentro de un mismo proceso Linux,
+
+== 2. Los procesos obligatorios y los que verás en el examen (v$bgprocess + v$process) ==
+
+PNAME  SPID     DESCRIPTION                                     
+------ -------- ------------------------------------------------
+PMON   31284    process cleanup                                 
+LREG   31348    Listener Registration                           
+SMON   31340    System Monitor Process                          
+DBW0   31333    db writer process 0                             
+LGWR   31335    Redo etc.                                       
+CKPT   31337    checkpoint                                      
+MMON   31362    Manageability Monitor Process                   
+MMNL   31365    Manageability Monitor Process 2                 
+RECO   31346    distributed recovery                            
+ARC0   31435    Archival Process 0                              
+CJQ0   31639    Job Queue Coordinator                           
+CLMN   31288    process cleanup                                 
+DIAG   31314    diagnosibility process                          
+DIA0   31329    diagnosibility process 0                        
+MMAN   31306    Memory Manager                                  
+PMAN   31327    process manager                                 
+PSP0   31292    process spawner 0                               
+VKTM   31296    Virtual Keeper of TiMe process                  
+
+== 3. ¿Hay archivador (ARCn)? En NOARCHIVELOG no debería aparecer ==
+
+PROCESOS_ARCN
+-------------
+            4
+
+== 4. Mi sesión y el proceso servidor que la atiende (arquitectura de servidor dedicado) ==
+
+       SID    SERIAL# USERNAME     MACHINE        PROGRAM                            SPID    
+---------- ---------- ------------ -------------- ---------------------------------- --------
+       176       3042 C##OPS_RO    abel-ZenBook-U SQLcl                              32594   
+                                   X325EA-UX325EA                                            
+
+
+== 5. Todas las sesiones de usuario ahora mismo ==
+
+       SID USERNAME     STATUS   MACHINE        PROGRAM                            SPID    
+---------- ------------ -------- -------------- ---------------------------------- --------
+       176 C##OPS_RO    ACTIVE   abel-ZenBook-U SQLcl                              32594   
+                                 X325EA-UX325EA                                            
+
