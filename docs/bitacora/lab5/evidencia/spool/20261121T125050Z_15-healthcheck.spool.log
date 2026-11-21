@@ -22,23 +22,24 @@ Grupos de redo con 1 solo miembro  0
 
 RESOURCE_NAME               AHORA     MAXIMO LIMITE    
 ---------------------- ---------- ---------- ----------
-processes                      97        102        200
-sessions                      126        133        322
+processes                      94        102        200
+sessions                      123        133        322
 transactions                    0          0  UNLIMITED
 
 == 5. Errores ORA- en el alert log en las últimas 24 h (v$diag_alert_ext) ==
 
-Error que empieza en la línea : 46 Archivo @ file:/home/abel/Documentos/oracle-database-lab/scripts/lab5/15-healthcheck.sql
-del comando -
-SELECT TO_CHAR(originating_timestamp, 'MM-DD HH24:MI') AS cuando,
-       SUBSTR(REGEXP_SUBSTR(message_text, 'ORA-[0-9]+[^' || CHR(10) || ']*'), 1, 90) AS mensaje
-  FROM v$diag_alert_ext
- WHERE originating_timestamp > SYSTIMESTAMP - INTERVAL '1' DAY AND message_text LIKE '%ORA-%'
- ORDER BY originating_timestamp DESC FETCH FIRST 10 ROWS ONLY
-Error en la línea de comandos : 48 Columna : 8 Archivo @ file:/home/abel/Documentos/oracle-database-lab/scripts/lab5/15-healthcheck.sql
-Informe de error -
-Error SQL: ORA-00942: La tabla o vista  "SYS"."V_$DIAG_ALERT_EXT" no existe
-Help: https://docs.oracle.com/error-help/db/ora-00942/
+CUANDO      MENSAJE                                                                                   
+----------- ------------------------------------------------------------------------------------------
+11-21 12:03 ORA-01113: file 21 needs media recovery                                                   
+11-21 12:03 ORA-01113: file 21 needs media recovery                                                   
+11-21 12:03 ORA-01110: data file 16: '/opt/oracle/oradata/FREE/FREEPDB1/academia01.dbf'               
+11-21 12:03 ORA-63999: data file suffered media failure                                               
+11-21 12:00 ORA-00800: soft external error, arguments: [Set Priority Failed], [LGWR], [Check traces an
+11-21 12:00 ORA-00800: soft external error, arguments: [Set Priority Failed], [VKTM], [Check traces an
+11-21 11:59 ORA-00800: soft external error, arguments: [Set Priority Failed], [LGWR], [Check traces an
+11-21 11:59 ORA-00800: soft external error, arguments: [Set Priority Failed], [VKTM], [Check traces an
+11-21 11:55 ORA-00202: control file: '/opt/oracle/oradata/FREE/control03.ctl'                         
+11-21 11:55 ORA-205 signalled during: ALTER DATABASE   MOUNT...                                       
 
 == 6. Cambios de log por hora en las últimas 24 h (muchos = redo pequeño o carga alta) ==
 
