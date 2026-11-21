@@ -1,0 +1,37 @@
+
+Session altered.
+
+
+PL/SQL procedure successfully completed.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Package created.
+
+
+Package body created.
+
+No errors.
+Prueba del banco de medida:
+prueba_pk                      filas=      1  lecturas lógicas=      4  físicas=    0       .2 ms
+			       plan: TABLE ACCESS BY INDEX ROWID PEDIDO > INDEX UNIQUE SCAN PK_PEDIDO
+
+PL/SQL procedure successfully completed.
+
