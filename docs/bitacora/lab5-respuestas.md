@@ -68,15 +68,12 @@ Undo, WAL y simulacros (M a P)
 
 21: C (tabla borrada con PURGE, restaurando la copia completa): RTO de 66 s, y el RPO es todo lo hecho desde la copia (aquí solo 1 s porque la copia se hizo justo antes). D (datafile perdido, con RMAN): RTO de 11 s (12 s desde el fallo) y RPO 0, porque la fila 104 cambiada después de la copia apareció como EGRESADO. Son tan distintos porque en C se restaura la base entera (1,7 GB) y se vuelve al momento de la copia, mientras que en D solo se restaura un archivo y RECOVER aplica el redo archivado hasta ahora.
 
-22: Los clasifico así:
+22: En el bloque 5 de mi runbook (15-healthcheck) salen estos errores, y los clasifico así:
+- ORA-63999, ORA-01110 (data file 16, academia01.dbf) y ORA-01113 (file 21 needs media recovery): efecto del laboratorio, simulacro D (Parte O). Borré academia01.dbf, Oracle cerró FREEPDB1 y al reabrirla revisó las cabeceras de sus datafiles. La PDB terminó en READ WRITE y la verificación final da OK, así que no queda nada pendiente.
+- ORA-00202 (control03.ctl) y ORA-205 durante el MOUNT: efecto del laboratorio, simulacro B (borré control03.ctl a propósito).
+- ORA-00800 (Set Priority Failed en LGWR y VKTM): ruido conocido del entorno, ya clasificado en el Lab 4. El contenedor no deja a Oracle subir la prioridad de esos procesos, pero la base funciona normal.
 
-ORA-63999, ORA-01116, ORA-01110, ORA-27041 y ORA-01113: efecto del laboratorio, simulacro D (Parte O). Borré academia01.dbf y Oracle cerró FREEPDB1; al reabrirla revisó las cabeceras de sus datafiles. La PDB terminó en READ WRITE, así que no queda nada pendiente.
-ORA-00205, ORA-00202 y ORA-27037: efecto del laboratorio, simulacro B (control03.ctl borrado a propósito).
-ORA-19815, ORA-19809 y ORA-16038: efecto del laboratorio, escenario de la FRA llena (Parte L).
-ORA-20013 (DBMS_QOPATCH) y, si sale, ORA-00800: ruido conocido del entorno, ya clasificado en el Lab 4.
-
-Ninguno es un incidente real.
-
+El runbook solo enseña los 10 últimos, por eso no aparecen los de la FRA llena de la Parte L. Ninguno es un incidente real.
 2. Tipo examen
 
 S1: B. Con CF cercano a las filas, cada fila del rango es un bloque distinto. (Parte E)
@@ -130,3 +127,22 @@ S24: B. Sin redo archivado solo queda volver a la última copia en frío. (Parte
 S25: B, D. Más retención y espacio de undo; RETENTION GUARANTEE si es crítico. (Parte M)
 
 S26: A. V$RECOVERY_AREA_USAGE da el uso por tipo de archivo. (Parte L)
+
+3. Simulacros: RTO y RPO
+
+A, caída de la instancia (SHUTDOWN ABORT): se recupera solo con un STARTUP normal. RTO: lo que tarda el arranque. RPO: 0.
+B, se borra control03.ctl: copiar control01.ctl encima, MOUNT y OPEN. RTO: unos segundos. RPO: 0.
+C, DROP TABLE ... PURGE: restaurar la copia completa. RTO: 66 s. RPO: todo lo hecho desde la copia (aquí 1 s).
+D, se borra academia01.dbf: RMAN, RESTORE + RECOVER del archivo. RTO: 11 s (12 s desde el fallo). RPO: 0.
+
+En el simulacro D me tocó el camino de PDB cerrada: al poner el archivo OFFLINE salió ORA-01089 porque Oracle estaba cerrando FREEPDB1. El script esperó a que quedara MOUNTED, lo restauró y volvió a abrir la PDB.
+
+Retrospectiva del game day
+Lo que me sorprendió: por una sola tabla tuve que restaurar 1,7 GB y volver al momento de la copia, mientras que con RMAN y ARCHIVELOG arreglé un archivo en 11 s sin perder nada. También que Oracle cerrara la PDB por su cuenta.
+Qué cambiaría: para un borrado de tabla usaría RMAN RECOVER TABLE en lugar de restaurar la base entera, y antes de reparar un datafile miraría siempre el estado de la PDB en v$pdbs.
+
+Retrospectiva: FRA llena
+Impacto: las sesiones se quedan esperando "log file switch (archiving needed)". No se pierden datos.
+Causa: repetir cargas grandes con ARCHIVELOG activo; en el lab lo provoqué bajando la FRA a 2 MB.
+Solución: devolver la FRA a 4 GB (ARCn archiva solo) o liberar espacio con RMAN, nunca con rm.
+Qué cambia: el runbook avisa al 80 % de la FRA. El aviso (ORA-19815) llega antes que el bloqueo; hay que mirarlo.
