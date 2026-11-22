@@ -1,0 +1,22 @@
+== EVIDENCIA alumno=E032 hora=2026-11-22T19:05:39Z origen=08-diagnostico
+== EVIDENCIA contenedor=332415d33bff dbid=1509902213 arranque=2026-11-22T18:43:32 scn=5416679
+== 1. ¿Quién espera, en qué y por culpa de quién? ==
+== 2. ¿Por qué fila exacta? ==
+== 3. Los bloqueos: quién TIENE el TX (lmode 6, block 1) y quién lo PIDE (request 6) ==
+== 4. ¿Cuánto trabajo se desharía si se termina al bloqueador? ==
+== 5. ASH lo guardó segundo a segundo (aunque el bloqueo ya no exista, esto queda) ==
+
+T          SID EVENT                           BLOQ
+-------- ----- ------------------------------ -----
+19:04:29   204 enq: TX - row lock contention    220
+19:04:28   204 enq: TX - row lock contention    220
+19:04:27   204 enq: TX - row lock contention    220
+19:04:26   204 enq: TX - row lock contention    220
+19:04:25   204 enq: TX - row lock contention    220
+== 6. Servicios: ¿están arrancados todos los que existen? (NO = existe, pero el listener no lo anuncia) ==
+
+    CON_ID NAME             ARRANCADO
+---------- ---------------- ---------
+         3 academia_app     SI       
+         3 FREEPDB1         SI       
+== 7. Cuentas que no son de Oracle y no están OPEN (LOCKED = a mano; LOCKED(TIMED) = intentos fallidos) ==
