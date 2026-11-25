@@ -3,5 +3,5 @@
 Training repository for Oracle Database administration,
 testing, change management and Git workflows.
 
-Name: ESCRIBE_SIEMPRE_TU_NOMBRE_EN_CADA_README
+Name: Abel Hernández Carrasco
 Professor: Richard Aviles Lopez
